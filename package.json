@@ -49,7 +49,7 @@
     "prepare": "husky install",
     "api-collection": "antd-tools run api-collection",
     "authors": "node ./scripts/generate-authors",
-    "build": "npm run compile && NODE_OPTIONS='--max-old-space-size=4096' npm run dist",
+    "build": "npm run compile && npm run dist",
     "bundlesize": "bundlesize",
     "check-commit": "node ./scripts/check-commit",
     "check-ts-demo": "node ./scripts/check-ts-demo",
