@@ -1,17 +1,16 @@
 import * as React from 'react';
-import RcMenu, { ItemGroup, MenuProps as RcMenuProps } from 'rc-menu';
+import RcMenu, { MenuProps as RcMenuProps, MenuRef } from 'rc-menu';
 import classNames from 'classnames';
 import omit from 'rc-util/lib/omit';
 import EllipsisOutlined from '@ant-design/icons/EllipsisOutlined';
-import SubMenu, { SubMenuProps } from './SubMenu';
-import Item, { MenuItemProps } from './MenuItem';
+import { SubMenuProps } from './SubMenu';
+import { MenuItemProps } from './MenuItem';
 import { ConfigContext } from '../config-provider';
 import devWarning from '../_util/devWarning';
 import { SiderContext, SiderContextProps } from '../layout/Sider';
 import collapseMotion from '../_util/motion';
 import { cloneElement } from '../_util/reactNode';
 import MenuContext, { MenuTheme } from './MenuContext';
-import MenuDivider from './MenuDivider';
 
 export { MenuDividerProps } from './MenuDivider';
 
@@ -119,24 +118,11 @@ function InternalMenu(props: InternalMenuProps) {
   );
 }
 
-// We should keep this as ref-able
-class Menu extends React.Component<MenuProps, {}> {
-  static Divider = MenuDivider;
-
-  static Item = Item;
-
-  static SubMenu = SubMenu;
-
-  static ItemGroup = ItemGroup;
-
-  render() {
-    return (
-      <SiderContext.Consumer>
-        {(context: SiderContextProps) => <InternalMenu {...this.props} {...context} />}
-      </SiderContext.Consumer>
-    );
-  }
-}
+const Menu = React.forwardRef<MenuRef, MenuProps>((props, ref) => (
+  <SiderContext.Consumer>
+    {(context: SiderContextProps) => <InternalMenu {...{ ...props, ref }} {...context} />}
+  </SiderContext.Consumer>
+));
 
 export { MenuTheme, SubMenuProps, MenuItemProps };
 
