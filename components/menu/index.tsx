@@ -1,16 +1,17 @@
 import * as React from 'react';
-import RcMenu, { MenuProps as RcMenuProps, MenuRef } from 'rc-menu';
+import RcMenu, { ItemGroup, MenuProps as RcMenuProps, MenuRef } from 'rc-menu';
 import classNames from 'classnames';
 import omit from 'rc-util/lib/omit';
 import EllipsisOutlined from '@ant-design/icons/EllipsisOutlined';
-import { SubMenuProps } from './SubMenu';
-import { MenuItemProps } from './MenuItem';
+import SubMenu, { SubMenuProps } from './SubMenu';
+import Item, { MenuItemProps } from './MenuItem';
 import { ConfigContext } from '../config-provider';
 import devWarning from '../_util/devWarning';
 import { SiderContext, SiderContextProps } from '../layout/Sider';
 import collapseMotion from '../_util/motion';
 import { cloneElement } from '../_util/reactNode';
 import MenuContext, { MenuTheme } from './MenuContext';
+import MenuDivider from './MenuDivider';
 
 export { MenuDividerProps } from './MenuDivider';
 
@@ -35,7 +36,7 @@ type InternalMenuProps = MenuProps &
     collapsedWidth?: string | number;
   };
 
-function InternalMenu(props: InternalMenuProps) {
+const InternalMenu = React.forwardRef<MenuRef, InternalMenuProps>((props, ref) => {
   const { getPrefixCls, getPopupContainer, direction } = React.useContext(ConfigContext);
 
   const rootPrefixCls = getPrefixCls();
@@ -105,6 +106,7 @@ function InternalMenu(props: InternalMenuProps) {
         overflowedIndicator={<EllipsisOutlined />}
         overflowedIndicatorPopupClassName={`${prefixCls}-${theme}`}
         {...passedProps}
+        ref={ref}
         inlineCollapsed={mergedInlineCollapsed}
         className={menuClassName}
         prefixCls={prefixCls}
@@ -116,14 +118,24 @@ function InternalMenu(props: InternalMenuProps) {
       />
     </MenuContext.Provider>
   );
-}
+});
 
 const Menu = React.forwardRef<MenuRef, MenuProps>((props, ref) => (
   <SiderContext.Consumer>
-    {(context: SiderContextProps) => <InternalMenu {...{ ...props, ref }} {...context} />}
+    {(context: SiderContextProps) => <InternalMenu ref={ref} {...props} {...context} />}
   </SiderContext.Consumer>
-));
+)) as React.ForwardRefExoticComponent<MenuProps & React.RefAttributes<MenuRef>> & {
+  Divider: typeof MenuDivider;
+  Item: typeof Item;
+  SubMenu: typeof SubMenu;
+  ItemGroup: typeof ItemGroup;
+};
 
-export { MenuTheme, SubMenuProps, MenuItemProps };
+Menu.Divider = MenuDivider;
+Menu.Item = Item;
+Menu.SubMenu = SubMenu;
+Menu.ItemGroup = ItemGroup;
+
+export { MenuTheme, SubMenuProps, MenuItemProps, MenuRef };
 
 export default Menu;

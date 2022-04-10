@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { ItemGroup, MenuProps as RcMenuProps } from 'rc-menu';
+import { ItemGroup, MenuProps as RcMenuProps, MenuRef } from 'rc-menu';
 import SubMenu, { SubMenuProps } from './SubMenu';
 import Item, { MenuItemProps } from './MenuItem';
 import { MenuTheme } from './MenuContext';
+import MenuDivider from './MenuDivider';
 export { MenuDividerProps } from './MenuDivider';
 export { MenuItemGroupProps } from 'rc-menu';
 export declare type MenuMode = 'vertical' | 'vertical-left' | 'vertical-right' | 'horizontal' | 'inline';
@@ -15,12 +16,11 @@ export interface MenuProps extends RcMenuProps {
      */
     _internalDisableMenuItemTitleTooltip?: boolean;
 }
-declare class Menu extends React.Component<MenuProps, {}> {
-    static Divider: React.FC<import("./MenuDivider").MenuDividerProps>;
-    static Item: typeof Item;
-    static SubMenu: typeof SubMenu;
-    static ItemGroup: typeof ItemGroup;
-    render(): JSX.Element;
-}
-export { MenuTheme, SubMenuProps, MenuItemProps };
+declare const Menu: React.ForwardRefExoticComponent<MenuProps & React.RefAttributes<MenuRef>> & {
+    Divider: typeof MenuDivider;
+    Item: typeof Item;
+    SubMenu: typeof SubMenu;
+    ItemGroup: typeof ItemGroup;
+};
+export { MenuTheme, SubMenuProps, MenuItemProps, MenuRef };
 export default Menu;
